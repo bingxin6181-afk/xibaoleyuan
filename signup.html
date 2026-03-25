@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活动报名 - 戏胞乐园剧团</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .signup-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.125rem;
+            margin-top: 1rem;
+        }
+        
+        .signup-note {
+            text-align: center;
+            color: var(--text-light);
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">🎭 <span class="site-name">戏胞乐园剧团</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="members.html">成员</a></li>
+                <li><a href="plays.html">剧目</a></li>
+                <li><a href="gallery.html">照片墙</a></li>
+                <li><a href="schedule.html">活动安排</a></li>
+                <li><a href="guestbook.html">留言墙</a></li>
+                <li><a href="sponsors.html">赞助商</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- 主内容 -->
+    <main>
+        <section class="section">
+            <h2 class="section-title">活动报名</h2>
+            
+            <form class="signup-form" id="signup-form">
+                <div class="form-group">
+                    <label class="form-label">姓名 *</label>
+                    <input type="text" class="form-input" name="name" required placeholder="请输入你的姓名">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">联系方式 *</label>
+                    <input type="text" class="form-input" name="contact" required placeholder="手机号或微信号">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">报名活动 *</label>
+                    <select class="form-select" name="activity" required>
+                        <option value="">请选择活动</option>
+                        <option value="weekly">周三 剧本围读</option>
+                        <option value="training">基本功训练</option>
+                        <option value="rehearsal">剧目排练</option>
+                        <option value="other">其他活动</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">备注</label>
+                    <textarea class="form-textarea" name="note" placeholder="有什么想告诉我们的吗？"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary submit-btn">📝 提交报名</button>
+            </form>
+            
+            <p class="signup-note">
+                💡 提示：你也可以直接在金数据/腾讯问卷创建表单，然后把链接放到这里
+            </p>
+        </section>
+    </main>
+    
+    <script src="js/data-manager.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = DataManager.getAll();
+            document.querySelectorAll('.site-name').forEach(el => {
+                el.textContent = data.theater.name;
+            });
+            document.title = '活动报名 - ' + data.theater.name;
+        });
+        
+        // 表单提交
+        document.getElementById('signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            // 存储报名数据（实际项目中应该发送到服务器）
+            let signups = JSON.parse(localStorage.getItem('cell_theater_signups') || '[]');
+            data.id = Date.now();
+            data.createdAt = new Date().toISOString();
+            signups.push(data);
+            localStorage.setItem('cell_theater_signups', JSON.stringify(signups));
+            
+            alert('报名成功！我们会尽快联系你~');
+            e.target.reset();
+        });
+    </script>
+</body>
+</html>

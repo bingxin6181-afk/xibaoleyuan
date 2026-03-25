@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>留言墙 - 戏胞乐园剧团</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .guestbook-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .message-form {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+        }
+        
+        .messages-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .message-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .message-author {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+        
+        .message-content {
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .empty-tip {
+            text-align: center;
+            color: var(--text-light);
+            padding: 3rem;
+        }
+        
+        .waline-note {
+            background: var(--bg);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+        
+        .waline-note code {
+            background: var(--card-bg);
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">🎭 <span class="site-name">戏胞乐园剧团</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="members.html">成员</a></li>
+                <li><a href="plays.html">剧目</a></li>
+                <li><a href="gallery.html">照片墙</a></li>
+                <li><a href="schedule.html">活动安排</a></li>
+                <li><a href="guestbook.html">留言墙</a></li>
+                <li><a href="sponsors.html">赞助商</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- 主内容 -->
+    <main>
+        <section class="section">
+            <h2 class="section-title">匿名留言墙</h2>
+            
+            <div class="guestbook-container">
+                <!-- 方式1：本地留言（简单版） -->
+                <div id="local-guestbook">
+                    <div class="message-form">
+                        <div class="form-group">
+                            <label class="form-label">你的昵称（选填）</label>
+                            <input type="text" class="form-input" id="msg-author" placeholder="匿名">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">留言内容 *</label>
+                            <textarea class="form-textarea" id="msg-content" placeholder="写下你想说的话..." required></textarea>
+                        </div>
+                        <button class="btn btn-primary submit-btn" onclick="submitMessage()">💬 发布留言</button>
+                    </div>
+                    
+                    <div class="messages-list" id="messages-list">
+                        <p class="empty-tip">还没有留言，来做第一个留言的人吧~</p>
+                    </div>
+                </div>
+                
+                <!-- 方式2：Waline 留言系统（专业版，可选） -->
+                <div id="waline-container" style="display: none;"></div>
+            </div>
+        </section>
+    </main>
+    
+    <script src="js/data-manager.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = DataManager.getAll();
+            document.querySelectorAll('.site-name').forEach(el => {
+                el.textContent = data.theater.name;
+            });
+            document.title = '留言墙 - ' + data.theater.name;
+            
+            loadMessages();
+        });
+        
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem('cell_theater_messages') || '[]');
+            const container = document.getElementById('messages-list');
+            
+            if (messages.length === 0) {
+                container.innerHTML = '<p class="empty-tip">还没有留言，来做第一个留言的人吧~</p>';
+                return;
+            }
+            
+            // 按时间倒序
+            messages.reverse();
+            
+            container.innerHTML = messages.map(m => `
+                <div class="message-card">
+                    <div class="message-header">
+                        <span class="message-author">${m.author || '匿名'}</span>
+                        <span class="message-time">${formatTime(m.time)}</span>
+                    </div>
+                    <div class="message-content">${escapeHtml(m.content)}</div>
+                </div>
+            `).join('');
+        }
+        
+        function submitMessage() {
+            const author = document.getElementById('msg-author').value.trim();
+            const content = document.getElementById('msg-content').value.trim();
+            
+            if (!content) {
+                alert('请输入留言内容');
+                return;
+            }
+            
+            const messages = JSON.parse(localStorage.getItem('cell_theater_messages') || '[]');
+            messages.push({
+                id: Date.now(),
+                author: author || '匿名',
+                content: content,
+                time: new Date().toISOString()
+            });
+            
+            localStorage.setItem('cell_theater_messages', JSON.stringify(messages));
+            
+            document.getElementById('msg-content').value = '';
+            document.getElementById('msg-author').value = '';
+            loadMessages();
+        }
+        
+        function formatTime(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleString('zh-CN', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

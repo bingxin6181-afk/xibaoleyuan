@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赞助商 - 戏胞乐园剧团</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .sponsor-section {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .sponsor-card {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .sponsor-logo {
+            max-width: 300px;
+            max-height: 200px;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+        }
+        
+        .sponsor-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .sponsor-content {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--text);
+            white-space: pre-wrap;
+        }
+        
+        .placeholder-logo {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">🎭 <span class="site-name">戏胞乐园剧团</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="members.html">成员</a></li>
+                <li><a href="plays.html">剧目</a></li>
+                <li><a href="gallery.html">照片墙</a></li>
+                <li><a href="schedule.html">活动安排</a></li>
+                <li><a href="guestbook.html">留言墙</a></li>
+                <li><a href="sponsors.html">赞助商</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- 主内容 -->
+    <main>
+        <section class="section sponsor-section">
+            <div class="sponsor-card">
+                <div id="sponsor-content">
+                    <div class="placeholder-logo">💧</div>
+                    <h2 class="sponsor-title">给水世代</h2>
+                    <p class="sponsor-content">感谢水世代对本剧团的大力支持！</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script src="js/data-manager.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = DataManager.getAll();
+            document.querySelectorAll('.site-name').forEach(el => {
+                el.textContent = data.theater.name;
+            });
+            document.title = '赞助商 - ' + data.theater.name;
+            
+            // 渲染赞助商信息
+            const sponsor = data.sponsors;
+            const container = document.getElementById('sponsor-content');
+            
+            container.innerHTML = `
+                ${sponsor.logo ? 
+                    `<img src="${sponsor.logo}" class="sponsor-logo" alt="${sponsor.title}">` : 
+                    `<div class="placeholder-logo">💧</div>`
+                }
+                <h2 class="sponsor-title">${sponsor.title || '给水世代'}</h2>
+                <p class="sponsor-content">${sponsor.content || '感谢水世代对本剧团的大力支持！'}</p>
+            `;
+        });
+    </script>
+</body>
+</html>

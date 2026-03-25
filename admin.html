@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>戏胞乐园 - 管理后台</title>
+    <!-- Quill 富文本编辑器 -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- SortableJS 拖拽排序 -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #8B5CF6;
+            --primary-dark: #7C3AED;
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text: #1E293B;
+            --text-light: #64748B;
+            --border: #E2E8F0;
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+        }
+        
+        /* 布局 */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: var(--card-bg);
+            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-logo {
+            padding: 0 1.5rem 2rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 1rem 0;
+        }
+        
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: var(--bg);
+            color: var(--primary);
+        }
+        
+        .nav-item.active {
+            border-left: 3px solid var(--primary);
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+        
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+        
+        /* 按钮 */
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: var(--bg); color: var(--text); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        
+        /* 表单 */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* 图片上传 */
+        .image-upload {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .image-upload:hover {
+            border-color: var(--primary);
+            background: var(--bg);
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        /* 列表项（可拖拽） */
+        .sortable-list {
+            list-style: none;
+        }
+        
+        .sortable-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: grab;
+            transition: all 0.2s;
+        }
+        
+        .sortable-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .sortable-item.sortable-ghost {
+            opacity: 0.4;
+            background: var(--bg);
+        }
+        
+        .sortable-item.sortable-drag {
+            cursor: grabbing;
+        }
+        
+        .drag-handle {
+            color: var(--text-light);
+            cursor: grab;
+        }
+        
+        .item-content {
+            flex: 1;
+        }
+        
+        .item-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .item-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+        }
+        
+        /* 批量导入 */
+        .batch-import-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            background: var(--bg);
+        }
+        
+        .batch-hint {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .batch-hint code {
+            background: var(--card-bg);
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        /* 页面切换 */
+        .page-section {
+            display: none;
+        }
+        
+        .page-section.active {
+            display: block;
+        }
+        
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            display: flex;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .toast-success { border-left: 4px solid var(--success); }
+        .toast-error { border-left: 4px solid var(--danger); }
+        
+        /* 富文本编辑器 */
+        .ql-container {
+            min-height: 200px;
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .ql-toolbar {
+            border-radius: 8px 8px 0 0;
+            background: var(--bg);
+        }
+        
+        /* 数据备份 */
+        .backup-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .hidden-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">🎭 管理后台</div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-page="theater">
+                    <span>🏠</span> 剧团介绍
+                </li>
+                <li class="nav-item" data-page="members">
+                    <span>👥</span> 成员管理
+                </li>
+                <li class="nav-item" data-page="gallery">
+                    <span>🖼️</span> 照片墙
+                </li>
+                <li class="nav-item" data-page="plays">
+                    <span>🎬</span> 剧目管理
+                </li>
+                <li class="nav-item" data-page="schedule">
+                    <span>📅</span> 活动安排
+                </li>
+                <li class="nav-item" data-page="partners">
+                    <span>🏫</span> 合作院校
+                </li>
+                <li class="nav-item" data-page="sponsors">
+                    <span>💧</span> 赞助页
+                </li>
+                <li class="nav-item" data-page="backup">
+                    <span>💾</span> 数据备份
+                </li>
+            </ul>
+        </aside>
+        
+        <!-- 主内容 -->
+        <main class="main-content">
+            <!-- 剧团介绍 -->
+            <section class="page-section active" id="page-theater">
+                <div class="page-header">
+                    <h1 class="page-title">剧团介绍</h1>
+                    <button class="btn btn-primary" onclick="saveTheater()">💾 保存</button>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label class="form-label">剧团名称</label>
+                        <input type="text" class="form-input" id="theater-name" placeholder="戏胞乐园剧团">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">一句话简介</label>
+                        <input type="text" class="form-input" id="theater-intro" placeholder="一个充满热爱与创造力的学生戏剧社团">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">详细介绍</label>
+                        <textarea class="form-textarea" id="theater-desc" placeholder="我们是一群热爱戏剧的年轻人..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">宣传海报</label>
+                        <div class="image-upload" onclick="document.getElementById('theater-poster-input').click()">
+                            <div id="theater-poster-preview">
+                                <p>📷 点击上传海报</p>
+                                <p style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.5rem;">支持 JPG、PNG 格式</p>
+                            </div>
+                        </div>
+                        <input type="file" id="theater-poster-input" class="hidden-input" accept="image/*" onchange="handlePosterUpload(this)">
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 成员管理 -->
+            <section class="page-section" id="page-members">
+                <div class="page-header">
+                    <h1 class="page-title">成员管理</h1>
+                    <button class="btn btn-primary" onclick="openMemberModal()">➕ 添加成员</button>
+                </div>
+                
+                <!-- 批量导入 -->
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">📋 批量导入</h3>
+                    <p class="batch-hint">从 Excel 复制多行数据，格式：<code>姓名  职位  简介</code>（用 Tab 或逗号分隔）</p>
+                    <textarea class="form-textarea" id="batch-members" placeholder="张三&#9;导演&#9;负责剧团整体把控
+李四&#9;演员&#9;擅长喜剧表演
+王五&#9;编剧&#9;中文系大三学生"></textarea>
+                    <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="batchImportMembers()">📥 批量导入</button>
+                </div>
+                
+                <!-- 成员列表 -->
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">👥 成员列表（拖拽可排序）</h3>
+                    <ul class="sortable-list" id="members-list"></ul>
+                </div>
+            </section>
+            
+            <!-- 照片墙 -->
+            <section class="page-section" id="page-gallery">
+                <div class="page-header">
+                    <h1 class="page-title">照片墙</h1>
+                    <button class="btn btn-primary" onclick="openGalleryModal()">➕ 添加照片</button>
+                </div>
+                <div class="card">
+                    <ul class="sortable-list" id="gallery-list"></ul>
+                </div>
+            </section>
+            
+            <!-- 剧目管理 -->
+            <section class="page-section" id="page-plays">
+                <div class="page-header">
+                    <h1 class="page-title">剧目管理</h1>
+                    <button class="btn btn-primary" onclick="openPlayModal()">➕ 添加剧目</button>
+                </div>
+                
+                <!-- 批量导入 -->
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">📋 批量导入</h3>
+                    <p class="batch-hint">格式：<code>剧名  时间  简介</code>（支持富文本的简介可以后面再编辑）</p>
+                    <textarea class="form-textarea" id="batch-plays" placeholder="《雷雨》&#9;2024.6&#9;经典话剧复排
+《茶馆》&#9;2023.12&#9;年度大戏"></textarea>
+                    <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="batchImportPlays()">📥 批量导入</button>
+                </div>
+                
+                <div class="card">
+                    <ul class="sortable-list" id="plays-list"></ul>
+                </div>
+            </section>
+            
+            <!-- 活动安排 -->
+            <section class="page-section" id="page-schedule">
+                <div class="page-header">
+                    <h1 class="page-title">活动安排</h1>
+                    <button class="btn btn-primary" onclick="addScheduleItem()">➕ 添加活动</button>
+                </div>
+                <div class="card">
+                    <p class="batch-hint" style="margin-bottom: 1rem;">格式：<code>星期  时间  活动  地点</code></p>
+                    <textarea class="form-textarea" id="batch-schedule" placeholder="周一&#9;19:00-21:00&#9;基本功训练&#9;排练厅A
+周三&#9;19:00-21:00&#9;剧本围读&#9;排练厅B"></textarea>
+                    <button class="btn btn-secondary" style="margin: 1rem 0;" onclick="batchImportSchedule()">📥 批量导入</button>
+                    
+                    <ul class="sortable-list" id="schedule-list" style="margin-top: 1.5rem;"></ul>
+                </div>
+            </section>
+            
+            <!-- 合作院校 -->
+            <section class="page-section" id="page-partners">
+                <div class="page-header">
+                    <h1 class="page-title">合作院校</h1>
+                    <button class="btn btn-primary" onclick="openPartnerModal()">➕ 添加合作方</button>
+                </div>
+                <div class="card">
+                    <ul class="sortable-list" id="partners-list"></ul>
+                </div>
+            </section>
+            
+            <!-- 赞助页 -->
+            <section class="page-section" id="page-sponsors">
+                <div class="page-header">
+                    <h1 class="page-title">赞助页（给水世代）</h1>
+                    <button class="btn btn-primary" onclick="saveSponsors()">💾 保存</button>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label class="form-label">页面标题</label>
+                        <input type="text" class="form-input" id="sponsor-title" placeholder="给水世代">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">感谢词 / 介绍</label>
+                        <textarea class="form-textarea" id="sponsor-content" placeholder="感谢水世代对本剧团的大力支持！"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">赞助商 Logo</label>
+                        <div class="image-upload" onclick="document.getElementById('sponsor-logo-input').click()">
+                            <div id="sponsor-logo-preview">
+                                <p>📷 点击上传 Logo</p>
+                            </div>
+                        </div>
+                        <input type="file" id="sponsor-logo-input" class="hidden-input" accept="image/*" onchange="handleSponsorLogoUpload(this)">
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 数据备份 -->
+            <section class="page-section" id="page-backup">
+                <div class="page-header">
+                    <h1 class="page-title">数据备份</h1>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">💾 备份与恢复</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1.5rem;">建议定期导出数据备份，换电脑或清除浏览器数据后可以恢复。</p>
+                    <div class="backup-actions">
+                        <button class="btn btn-primary" onclick="exportData()">📤 导出数据</button>
+                        <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📥 导入数据</button>
+                        <button class="btn btn-danger" onclick="clearAllData()">🗑️ 清空所有数据</button>
+                    </div>
+                    <input type="file" id="import-file" class="hidden-input" accept=".json" onchange="importData(this)">
+                </div>
+                <div class="card" style="margin-top: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem;">📊 数据统计</h3>
+                    <div id="data-stats"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast">
+        <span id="toast-icon">✓</span>
+        <span id="toast-message">操作成功</span>
+    </div>
+    
+    <!-- 成员编辑弹窗 -->
+    <div id="member-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 12px; padding: 2rem; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto;">
+            <h2 style="margin-bottom: 1.5rem;">编辑成员</h2>
+            <input type="hidden" id="member-id">
+            <div class="form-group">
+                <label class="form-label">姓名 *</label>
+                <input type="text" class="form-input" id="member-name" placeholder="姓名">
+            </div>
+            <div class="form-group">
+                <label class="form-label">职位</label>
+                <input type="text" class="form-input" id="member-role" placeholder="导演 / 演员 / 编剧">
+            </div>
+            <div class="form-group">
+                <label class="form-label">简介</label>
+                <textarea class="form-textarea" id="member-intro" placeholder="个人简介..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">头像</label>
+                <div class="image-upload" onclick="document.getElementById('member-avatar-input').click()">
+                    <div id="member-avatar-preview">
+                        <p>📷 点击上传头像</p>
+                    </div>
+                </div>
+                <input type="file" id="member-avatar-input" class="hidden-input" accept="image/*" onchange="handleMemberAvatarUpload(this)">
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeModal('member-modal')">取消</button>
+                <button class="btn btn-primary" onclick="saveMember()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 剧目编辑弹窗 -->
+    <div id="play-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 12px; padding: 2rem; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto;">
+            <h2 style="margin-bottom: 1.5rem;">编辑剧目</h2>
+            <input type="hidden" id="play-id">
+            <div class="form-group">
+                <label class="form-label">剧名 *</label>
+                <input type="text" class="form-input" id="play-name" placeholder="剧目名称">
+            </div>
+            <div class="form-group">
+                <label class="form-label">时间</label>
+                <input type="text" class="form-input" id="play-date" placeholder="2024.6">
+            </div>
+            <div class="form-group">
+                <label class="form-label">剧目介绍（支持富文本）</label>
+                <div id="play-editor"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">封面图</label>
+                <div class="image-upload" onclick="document.getElementById('play-cover-input').click()">
+                    <div id="play-cover-preview">
+                        <p>📷 点击上传封面</p>
+                    </div>
+                </div>
+                <input type="file" id="play-cover-input" class="hidden-input" accept="image/*" onchange="handlePlayCoverUpload(this)">
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeModal('play-modal')">取消</button>
+                <button class="btn btn-primary" onclick="savePlay()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 照片编辑弹窗 -->
+    <div id="gallery-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 12px; padding: 2rem; width: 90%; max-width: 500px;">
+            <h2 style="margin-bottom: 1.5rem;">添加照片</h2>
+            <input type="hidden" id="gallery-id">
+            <div class="form-group">
+                <label class="form-label">照片标题</label>
+                <input type="text" class="form-input" id="gallery-title" placeholder="活动名称">
+            </div>
+            <div class="form-group">
+                <label class="form-label">照片描述</label>
+                <textarea class="form-textarea" id="gallery-desc" placeholder="这张照片的故事..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">照片 *</label>
+                <div class="image-upload" onclick="document.getElementById('gallery-image-input').click()">
+                    <div id="gallery-image-preview">
+                        <p>📷 点击上传照片</p>
+                    </div>
+                </div>
+                <input type="file" id="gallery-image-input" class="hidden-input" accept="image/*" onchange="handleGalleryImageUpload(this)">
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeModal('gallery-modal')">取消</button>
+                <button class="btn btn-primary" onclick="saveGalleryItem()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 合作院校弹窗 -->
+    <div id="partner-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 12px; padding: 2rem; width: 90%; max-width: 400px;">
+            <h2 style="margin-bottom: 1.5rem;">添加合作院校</h2>
+            <input type="hidden" id="partner-id">
+            <div class="form-group">
+                <label class="form-label">名称 *</label>
+                <input type="text" class="form-input" id="partner-name" placeholder="XX大学">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Logo</label>
+                <div class="image-upload" onclick="document.getElementById('partner-logo-input').click()">
+                    <div id="partner-logo-preview">
+                        <p>📷 点击上传 Logo</p>
+                    </div>
+                </div>
+                <input type="file" id="partner-logo-input" class="hidden-input" accept="image/*" onchange="handlePartnerLogoUpload(this)">
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeModal('partner-modal')">取消</button>
+                <button class="btn btn-primary" onclick="savePartner()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quill 编辑器 -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="js/data-manager.js"></script>
+    <script>
+        // 全局变量
+        let playEditor = null;
+        let tempImages = {};
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSortable();
+            initEditor();
+            loadAllData();
+        });
+        
+        // 导航切换
+        function initNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+                    
+                    item.classList.add('active');
+                    const page = item.dataset.page;
+                    document.getElementById(`page-${page}`).classList.add('active');
+                    
+                    if (page === 'backup') updateDataStats();
+                });
+            });
+        }
+        
+        // 初始化富文本编辑器
+        function initEditor() {
+            playEditor = new Quill('#play-editor', {
+                theme: 'snow',
+                placeholder: '在这里输入剧目详细介绍...',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        [{ 'header': [1, 2, 3, false] }],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                }
+            });
+        }
+        
+        // 初始化拖拽排序
+        function initSortable() {
+            ['members-list', 'gallery-list', 'plays-list', 'schedule-list', 'partners-list'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    new Sortable(el, {
+                        handle: '.drag-handle',
+                        animation: 150,
+                        ghostClass: 'sortable-ghost',
+                        dragClass: 'sortable-drag',
+                        onEnd: (evt) => {
+                            const module = id.replace('-list', '');
+                            const items = DataManager.get(module);
+                            const item = items.splice(evt.oldIndex, 1)[0];
+                            items.splice(evt.newIndex, 0, item);
+                            DataManager.save(module, items);
+                            showToast('排序已保存');
+                        }
+                    });
+                }
+            });
+        }
+        
+        // 加载所有数据
+        function loadAllData() {
+            const data = DataManager.getAll();
+            
+            // 剧团介绍
+            document.getElementById('theater-name').value = data.theater.name;
+            document.getElementById('theater-intro').value = data.theater.intro;
+            document.getElementById('theater-desc').value = data.theater.description;
+            if (data.theater.poster) {
+                document.getElementById('theater-poster-preview').innerHTML = 
+                    `<img src="${data.theater.poster}" class="image-preview">`;
+            }
+            
+            // 成员
+            renderMembersList();
+            
+            // 照片
+            renderGalleryList();
+            
+            // 剧目
+            renderPlaysList();
+            
+            // 活动安排
+            renderScheduleList();
+            
+            // 合作院校
+            renderPartnersList();
+            
+            // 赞助页
+            document.getElementById('sponsor-title').value = data.sponsors.title;
+            document.getElementById('sponsor-content').value = data.sponsors.content;
+            if (data.sponsors.logo) {
+                document.getElementById('sponsor-logo-preview').innerHTML = 
+                    `<img src="${data.sponsors.logo}" class="image-preview">`;
+            }
+        }
+        
+        // 渲染成员列表
+        function renderMembersList() {
+            const members = DataManager.get('members');
+            const list = document.getElementById('members-list');
+            list.innerHTML = members.map(m => `
+                <li class="sortable-item" data-id="${m.id}">
+                    <span class="drag-handle">☰</span>
+                    <img src="${m.avatar || 'data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"40\" height=\"40\"><rect width=\"40\" height=\"40\" fill=\"%238B5CF6\"/><text x=\"50%\" y=\"50%\" dominant-baseline=\"middle\" text-anchor=\"middle\" fill=\"white\" font-size=\"20\">${m.name[0]}</text></svg>'}" 
+                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    <div class="item-content">
+                        <div class="item-title">${m.name}</div>
+                        <div class="item-subtitle">${m.role || '成员'}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="editMember('${m.id}')">编辑</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteMember('${m.id}')">删除</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+        
+        // 渲染照片列表
+        function renderGalleryList() {
+            const photos = DataManager.get('gallery');
+            const list = document.getElementById('gallery-list');
+            list.innerHTML = photos.map(p => `
+                <li class="sortable-item" data-id="${p.id}">
+                    <span class="drag-handle">☰</span>
+                    <img src="${p.src}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                    <div class="item-content">
+                        <div class="item-title">${p.title || '未命名'}</div>
+                        <div class="item-subtitle">${p.desc || ''}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn btn-danger btn-sm" onclick="deleteGalleryItem('${p.id}')">删除</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+        
+        // 渲染剧目列表
+        function renderPlaysList() {
+            const plays = DataManager.get('plays');
+            const list = document.getElementById('plays-list');
+            list.innerHTML = plays.map(p => `
+                <li class="sortable-item" data-id="${p.id}">
+                    <span class="drag-handle">☰</span>
+                    <img src="${p.cover || 'data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"60\" height=\"60\"><rect width=\"60\" height=\"60\" fill=\"%23E2E8F0\"/><text x=\"50%\" y=\"50%\" dominant-baseline=\"middle\" text-anchor=\"middle\" fill=\"%2364748B\" font-size=\"12\">无封面</text></svg>'}" 
+                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                    <div class="item-content">
+                        <div class="item-title">${p.name}</div>
+                        <div class="item-subtitle">${p.date || ''}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="editPlay('${p.id}')">编辑</button>
+                        <button class="btn btn-danger btn-sm" onclick="deletePlay('${p.id}')">删除</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+        
+        // 渲染活动安排
+        function renderScheduleList() {
+            const schedule = DataManager.get('schedule');
+            const list = document.getElementById('schedule-list');
+            list.innerHTML = schedule.map((s, index) => `
+                <li class="sortable-item" data-index="${index}">
+                    <span class="drag-handle">☰</span>
+                    <div class="item-content">
+                        <div class="item-title">${s.day} ${s.time}</div>
+                        <div class="item-subtitle">${s.activity} @ ${s.location}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="editScheduleItem(${index})">编辑</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteScheduleItem(${index})">删除</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+        
+        // 渲染合作院校
+        function renderPartnersList() {
+            const partners = DataManager.get('partners');
+            const list = document.getElementById('partners-list');
+            list.innerHTML = partners.map(p => `
+                <li class="sortable-item" data-id="${p.id}">
+                    <span class="drag-handle">☰</span>
+                    ${p.logo ? `<img src="${p.logo}" style="width: 40px; height: 40px; object-fit: contain;">` : ''}
+                    <div class="item-content">
+                        <div class="item-title">${p.name}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn btn-danger btn-sm" onclick="deletePartner('${p.id}')">删除</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+        
+        // ========== 成员管理 ==========
+        function openMemberModal(id = null) {
+            document.getElementById('member-id').value = id || '';
+            document.getElementById('member-name').value = '';
+            document.getElementById('member-role').value = '';
+            document.getElementById('member-intro').value = '';
+            document.getElementById('member-avatar-preview').innerHTML = '<p>📷 点击上传头像</p>';
+            tempImages.memberAvatar = null;
+            
+            if (id) {
+                const member = DataManager.get('members').find(m => m.id === id);
+                if (member) {
+                    document.getElementById('member-name').value = member.name;
+                    document.getElementById('member-role').value = member.role || '';
+                    document.getElementById('member-intro').value = member.intro || '';
+                    if (member.avatar) {
+                        document.getElementById('member-avatar-preview').innerHTML = 
+                            `<img src="${member.avatar}" class="image-preview">`;
+                    }
+                }
+            }
+            
+            document.getElementById('member-modal').style.display = 'flex';
+        }
+        
+        function saveMember() {
+            const id = document.getElementById('member-id').value;
+            const member = {
+                name: document.getElementById('member-name').value,
+                role: document.getElementById('member-role').value,
+                intro: document.getElementById('member-intro').value,
+                avatar: tempImages.memberAvatar || (id ? DataManager.get('members').find(m => m.id === id)?.avatar : '')
+            };
+            
+            if (!member.name) {
+                showToast('请填写姓名', 'error');
+                return;
+            }
+            
+            if (id) {
+                DataManager.update('members', id, member);
+            } else {
+                DataManager.add('members', member);
+            }
+            
+            renderMembersList();
+            closeModal('member-modal');
+            showToast('保存成功');
+        }
+        
+        function editMember(id) {
+            openMemberModal(id);
+        }
+        
+        function deleteMember(id) {
+            if (confirm('确定删除这个成员吗？')) {
+                DataManager.delete('members', id);
+                renderMembersList();
+                showToast('已删除');
+            }
+        }
+        
+        function batchImportMembers() {
+            const text = document.getElementById('batch-members').value;
+            if (!text.trim()) {
+                showToast('请先粘贴数据', 'error');
+                return;
+            }
+            
+            const members = BatchImport.parseMembers(text);
+            if (members.length === 0) {
+                showToast('未识别到有效数据', 'error');
+                return;
+            }
+            
+            const count = DataManager.importBatch('members', members);
+            document.getElementById('batch-members').value = '';
+            renderMembersList();
+            showToast(`成功导入 ${count} 位成员`);
+        }
+        
+        // ========== 剧目管理 ==========
+        function openPlayModal(id = null) {
+            document.getElementById('play-id').value = id || '';
+            document.getElementById('play-name').value = '';
+            document.getElementById('play-date').value = '';
+            playEditor.setContents([]);
+            document.getElementById('play-cover-preview').innerHTML = '<p>📷 点击上传封面</p>';
+            tempImages.playCover = null;
+            
+            if (id) {
+                const play = DataManager.get('plays').find(p => p.id === id);
+                if (play) {
+                    document.getElementById('play-name').value = play.name;
+                    document.getElementById('play-date').value = play.date || '';
+                    if (play.content) playEditor.root.innerHTML = play.content;
+                    if (play.cover) {
+                        document.getElementById('play-cover-preview').innerHTML = 
+                            `<img src="${play.cover}" class="image-preview">`;
+                    }
+                }
+            }
+            
+            document.getElementById('play-modal').style.display = 'flex';
+        }
+        
+        function savePlay() {
+            const id = document.getElementById('play-id').value;
+            const play = {
+                name: document.getElementById('play-name').value,
+                date: document.getElementById('play-date').value,
+                content: playEditor.root.innerHTML,
+                cover: tempImages.playCover || (id ? DataManager.get('plays').find(p => p.id === id)?.cover : '')
+            };
+            
+            if (!play.name) {
+                showToast('请填写剧名', 'error');
+                return;
+            }
+            
+            if (id) {
+                DataManager.update('plays', id, play);
+            } else {
+                DataManager.add('plays', play);
+            }
+            
+            renderPlaysList();
+            closeModal('play-modal');
+            showToast('保存成功');
+        }
+        
+        function editPlay(id) {
+            openPlayModal(id);
+        }
+        
+        function deletePlay(id) {
+            if (confirm('确定删除这个剧目吗？')) {
+                DataManager.delete('plays', id);
+                renderPlaysList();
+                showToast('已删除');
+            }
+        }
+        
+        function batchImportPlays() {
+            const text = document.getElementById('batch-plays').value;
+            if (!text.trim()) {
+                showToast('请先粘贴数据', 'error');
+                return;
+            }
+            
+            const plays = BatchImport.parsePlays(text);
+            if (plays.length === 0) {
+                showToast('未识别到有效数据', 'error');
+                return;
+            }
+            
+            const count = DataManager.importBatch('plays', plays);
+            document.getElementById('batch-plays').value = '';
+            renderPlaysList();
+            showToast(`成功导入 ${count} 个剧目`);
+        }
+        
+        // ========== 照片墙 ==========
+        function openGalleryModal() {
+            document.getElementById('gallery-id').value = '';
+            document.getElementById('gallery-title').value = '';
+            document.getElementById('gallery-desc').value = '';
+            document.getElementById('gallery-image-preview').innerHTML = '<p>📷 点击上传照片</p>';
+            tempImages.galleryImage = null;
+            document.getElementById('gallery-modal').style.display = 'flex';
+        }
+        
+        function saveGalleryItem() {
+            const title = document.getElementById('gallery-title').value;
+            const desc = document.getElementById('gallery-desc').value;
+            
+            if (!tempImages.galleryImage) {
+                showToast('请上传照片', 'error');
+                return;
+            }
+            
+            DataManager.add('gallery', {
+                title,
+                desc,
+                src: tempImages.galleryImage
+            });
+            
+            renderGalleryList();
+            closeModal('gallery-modal');
+            showToast('保存成功');
+        }
+        
+        function deleteGalleryItem(id) {
+            if (confirm('确定删除这张照片吗？')) {
+                DataManager.delete('gallery', id);
+                renderGalleryList();
+                showToast('已删除');
+            }
+        }
+        
+        // ========== 活动安排 ==========
+        function addScheduleItem() {
+            const day = prompt('星期（如：周一）：');
+            if (!day) return;
+            const time = prompt('时间（如：19:00-21:00）：') || '';
+            const activity = prompt('活动内容：') || '';
+            const location = prompt('地点：') || '';
+            
+            const items = DataManager.get('schedule');
+            items.push({ day, time, activity, location });
+            DataManager.save('schedule', items);
+            renderScheduleList();
+            showToast('添加成功');
+        }
+        
+        function editScheduleItem(index) {
+            const items = DataManager.get('schedule');
+            const s = items[index];
+            
+            const day = prompt('星期：', s.day);
+            if (day === null) return;
+            const time = prompt('时间：', s.time);
+            if (time === null) return;
+            const activity = prompt('活动内容：', s.activity);
+            if (activity === null) return;
+            const location = prompt('地点：', s.location);
+            if (location === null) return;
+            
+            items[index] = { day, time, activity, location };
+            DataManager.save('schedule', items);
+            renderScheduleList();
+            showToast('保存成功');
+        }
+        
+        function deleteScheduleItem(index) {
+            if (confirm('确定删除这个活动安排吗？')) {
+                const items = DataManager.get('schedule');
+                items.splice(index, 1);
+                DataManager.save('schedule', items);
+                renderScheduleList();
+                showToast('已删除');
+            }
+        }
+        
+        function batchImportSchedule() {
+            const text = document.getElementById('batch-schedule').value;
+            if (!text.trim()) {
+                showToast('请先粘贴数据', 'error');
+                return;
+            }
+            
+            const schedule = BatchImport.parseSchedule(text);
+            if (schedule.length === 0) {
+                showToast('未识别到有效数据', 'error');
+                return;
+            }
+            
+            const existing = DataManager.get('schedule');
+            DataManager.save('schedule', [...existing, ...schedule]);
+            document.getElementById('batch-schedule').value = '';
+            renderScheduleList();
+            showToast(`成功导入 ${schedule.length} 条安排`);
+        }
+        
+        // ========== 合作院校 ==========
+        function openPartnerModal() {
+            document.getElementById('partner-id').value = '';
+            document.getElementById('partner-name').value = '';
+            document.getElementById('partner-logo-preview').innerHTML = '<p>📷 点击上传 Logo</p>';
+            tempImages.partnerLogo = null;
+            document.getElementById('partner-modal').style.display = 'flex';
+        }
+        
+        function savePartner() {
+            const name = document.getElementById('partner-name').value;
+            if (!name) {
+                showToast('请填写名称', 'error');
+                return;
+            }
+            
+            DataManager.add('partners', {
+                name,
+                logo: tempImages.partnerLogo || ''
+            });
+            
+            renderPartnersList();
+            closeModal('partner-modal');
+            showToast('保存成功');
+        }
+        
+        function deletePartner(id) {
+            if (confirm('确定删除这个合作方吗？')) {
+                DataManager.delete('partners', id);
+                renderPartnersList();
+                showToast('已删除');
+            }
+        }
+        
+        // ========== 图片上传处理 ==========
+        async function handleMemberAvatarUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const base64 = await ImageUtils.fileToBase64(file);
+            const compressed = await ImageUtils.compressImage(base64, 200);
+            tempImages.memberAvatar = compressed;
+            
+            document.getElementById('member-avatar-preview').innerHTML = 
+                `<img src="${compressed}" class="image-preview">`;
+        }
+        
+        async function handlePlayCoverUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const base64 = await ImageUtils.fileToBase64(file);
+            const compressed = await ImageUtils.compressImage(base64, 400);
+            tempImages.playCover = compressed;
+            
+            document.getElementById('play-cover-preview').innerHTML = 
+                `<img src="${compressed}" class="image-preview">`;
+        }
+        
+        async function handleGalleryImageUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const base64 = await ImageUtils.fileToBase64(file);
+            const compressed = await ImageUtils.compressImage(base64, 800);
+            tempImages.galleryImage = compressed;
+            
+            document.getElementById('gallery-image-preview').innerHTML = 
+                `<img src="${compressed}" class="image-preview">`;
+        }
+        
+        async function handlePartnerLogoUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const base64 = await ImageUtils.fileToBase64(file);
+            const compressed = await ImageUtils.compressImage(base64, 200);
+            tempImages.partnerLogo = compressed;
+            
+            document.getElementById('partner-logo-preview').innerHTML = 
+                `<img src="${compressed}" class="image-preview">`;
+        }
+        
+        async function handlePosterUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const base64 = await ImageUtils.fileToBase64(file);
+            const compressed = await ImageUtils.compressImage(base64, 800);
+            
+            const data = DataManager.getAll();
+            data.theater.poster = compressed;
+            DataManager.saveAll(data);
+            
+            document.getElementById('theater-poster-preview').innerHTML = 
+                `<img src="${compressed}" class="image-preview">`;
+            showToast('海报已上传');
+        }
+        
+        async function handleSponsorLogoUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const base64 = await ImageUtils.fileToBase64(file);
+            const compressed = await ImageUtils.compressImage(base64, 300);
+            
+            const data = DataManager.getAll();
+            data.sponsors.logo = compressed;
+            DataManager.saveAll(data);
+            
+            document.getElementById('sponsor-logo-preview').innerHTML = 
+                `<img src="${compressed}" class="image-preview">`;
+            showToast('Logo 已上传');
+        }
+        
+        // ========== 其他 ==========
+        function saveTheater() {
+            const data = DataManager.getAll();
+            data.theater.name = document.getElementById('theater-name').value;
+            data.theater.intro = document.getElementById('theater-intro').value;
+            data.theater.description = document.getElementById('theater-desc').value;
+            DataManager.saveAll(data);
+            showToast('保存成功');
+        }
+        
+        function saveSponsors() {
+            const data = DataManager.getAll();
+            data.sponsors.title = document.getElementById('sponsor-title').value;
+            data.sponsors.content = document.getElementById('sponsor-content').value;
+            DataManager.saveAll(data);
+            showToast('保存成功');
+        }
+        
+        function exportData() {
+            DataManager.exportToFile();
+            showToast('数据已导出');
+        }
+        
+        async function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            try {
+                await DataManager.importFromFile(file);
+                loadAllData();
+                showToast('数据已恢复');
+            } catch (err) {
+                showToast('导入失败，请检查文件格式', 'error');
+            }
+            input.value = '';
+        }
+        
+        function clearAllData() {
+            if (confirm('⚠️ 确定要清空所有数据吗？此操作不可恢复！')) {
+                DataManager.clear();
+                loadAllData();
+                showToast('数据已清空');
+            }
+        }
+        
+        function updateDataStats() {
+            const data = DataManager.getAll();
+            const stats = document.getElementById('data-stats');
+            stats.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;">
+                    <div style="background: var(--bg); padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${data.members.length}</div>
+                        <div style="font-size: 0.875rem; color: var(--text-light);">成员</div>
+                    </div>
+                    <div style="background: var(--bg); padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${data.plays.length}</div>
+                        <div style="font-size: 0.875rem; color: var(--text-light);">剧目</div>
+                    </div>
+                    <div style="background: var(--bg); padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${data.gallery.length}</div>
+                        <div style="font-size: 0.875rem; color: var(--text-light);">照片</div>
+                    </div>
+                    <div style="background: var(--bg); padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${data.partners.length}</div>
+                        <div style="font-size: 0.875rem; color: var(--text-light);">合作院校</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+        
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            toast.className = `toast toast-${type} show`;
+            icon.textContent = type === 'success' ? '✓' : '⚠';
+            document.getElementById('toast-message').textContent = message;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

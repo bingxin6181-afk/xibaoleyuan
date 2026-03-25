@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>照片墙 - 戏胞乐园剧团</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">🎭 <span class="site-name">戏胞乐园剧团</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="members.html">成员</a></li>
+                <li><a href="plays.html">剧目</a></li>
+                <li><a href="gallery.html">照片墙</a></li>
+                <li><a href="schedule.html">活动安排</a></li>
+                <li><a href="guestbook.html">留言墙</a></li>
+                <li><a href="sponsors.html">赞助商</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- 主内容 -->
+    <main>
+        <section class="section">
+            <h2 class="section-title">精彩瞬间</h2>
+            <div id="gallery-container" class="gallery-grid"></div>
+        </section>
+    </main>
+    
+    <!-- Lightbox -->
+    <div id="lightbox" onclick="closeLightbox(event)">
+        <button class="lightbox-close" onclick="closeLightbox()">×</button>
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <img id="lightbox-img" src="" alt="">
+            <div class="lightbox-info">
+                <h3 id="lightbox-title"></h3>
+                <p id="lightbox-desc"></p>
+            </div>
+        </div>
+        <span id="lightbox-counter" style="position: absolute; top: 2rem; right: 2rem; color: white;"></span>
+        <button class="lightbox-nav lightbox-prev" onclick="prevPhoto(event)">‹</button>
+        <button class="lightbox-nav lightbox-next" onclick="nextPhoto(event)">›</button>
+    </div>
+    
+    <script src="js/data-manager.js"></script>
+    <script src="js/display.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = DataManager.getAll();
+            document.querySelectorAll('.site-name').forEach(el => {
+                el.textContent = data.theater.name;
+            });
+            document.title = '照片墙 - ' + data.theater.name;
+            
+            renderGallery('gallery-container');
+        });
+        
+        function closeLightbox(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('lightbox').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        
+        function prevPhoto(e) {
+            e.stopPropagation();
+            prevPhotoFunc();
+        }
+        
+        function nextPhoto(e) {
+            e.stopPropagation();
+            nextPhotoFunc();
+        }
+    </script>
+</body>
+</html>

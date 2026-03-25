@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成员介绍 - 戏胞乐园剧团</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">🎭 <span class="site-name">戏胞乐园剧团</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="members.html">成员</a></li>
+                <li><a href="plays.html">剧目</a></li>
+                <li><a href="gallery.html">照片墙</a></li>
+                <li><a href="schedule.html">活动安排</a></li>
+                <li><a href="guestbook.html">留言墙</a></li>
+                <li><a href="sponsors.html">赞助商</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- 主内容 -->
+    <main>
+        <section class="section">
+            <h2 class="section-title">剧团成员</h2>
+            <div id="members-container" class="card-grid"></div>
+        </section>
+    </main>
+    
+    <script src="js/data-manager.js"></script>
+    <script src="js/display.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 更新站点名称
+            const data = DataManager.getAll();
+            document.querySelectorAll('.site-name').forEach(el => {
+                el.textContent = data.theater.name;
+            });
+            document.title = '成员介绍 - ' + data.theater.name;
+            
+            // 渲染成员
+            renderMembers('members-container');
+        });
+    </script>
+</body>
+</html>

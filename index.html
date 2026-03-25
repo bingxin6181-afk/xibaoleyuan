@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>戏胞乐园剧团</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 首页特有样式 */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+        
+        .hero-poster {
+            max-width: 400px;
+            margin: 2rem auto 0;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .quick-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+            text-decoration: none;
+            color: var(--text);
+        }
+        
+        .quick-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .quick-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .quick-card h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .quick-card p {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">🎭 <span id="site-name">戏胞乐园剧团</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="members.html">成员</a></li>
+                <li><a href="plays.html">剧目</a></li>
+                <li><a href="gallery.html">照片墙</a></li>
+                <li><a href="schedule.html">活动安排</a></li>
+                <li><a href="guestbook.html">留言墙</a></li>
+                <li><a href="sponsors.html">赞助商</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- 主内容 -->
+    <main>
+        <!-- Hero 区 -->
+        <section class="hero">
+            <h1 id="hero-title">戏胞乐园剧团</h1>
+            <p id="hero-intro">一个充满热爱与创造力的学生戏剧社团</p>
+            <p id="hero-desc" style="margin-top: 1rem; font-size: 1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                我们是一群热爱戏剧的年轻人，用舞台诠释青春，用表演传递情感。
+            </p>
+            <img id="hero-poster" class="hero-poster" style="display: none;">
+        </section>
+        
+        <!-- 快捷入口 -->
+        <h2 class="section-title">快速导航</h2>
+        <div class="quick-links">
+            <a href="members.html" class="quick-card">
+                <div class="icon">👥</div>
+                <h3>成员介绍</h3>
+                <p>认识我们的小伙伴</p>
+            </a>
+            <a href="plays.html" class="quick-card">
+                <div class="icon">🎬</div>
+                <h3>过往剧目</h3>
+                <p>查看我们的作品</p>
+            </a>
+            <a href="gallery.html" class="quick-card">
+                <div class="icon">🖼️</div>
+                <h3>照片墙</h3>
+                <p>精彩瞬间回顾</p>
+            </a>
+            <a href="schedule.html" class="quick-card">
+                <div class="icon">📅</div>
+                <h3>活动安排</h3>
+                <p>每周活动计划</p>
+            </a>
+            <a href="signup.html" class="quick-card">
+                <div class="icon">📝</div>
+                <h3>活动报名</h3>
+                <p>参加我们的活动</p>
+            </a>
+            <a href="guestbook.html" class="quick-card">
+                <div class="icon">💬</div>
+                <h3>留言墙</h3>
+                <p>留下你想说的话</p>
+            </a>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer style="text-align: center; padding: 3rem 2rem; color: var(--text-light); border-top: 1px solid var(--border); margin-top: 4rem;">
+        <p>© 2024 戏胞乐园剧团 · 用热爱演绎青春</p>
+    </footer>
+    
+    <script src="js/data-manager.js"></script>
+    <script>
+        // 加载数据
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = DataManager.getAll();
+            
+            // 更新标题
+            document.getElementById('site-name').textContent = data.theater.name;
+            document.title = data.theater.name;
+            
+            // 更新 Hero
+            document.getElementById('hero-title').textContent = data.theater.name;
+            document.getElementById('hero-intro').textContent = data.theater.intro;
+            document.getElementById('hero-desc').textContent = data.theater.description;
+            
+            // 更新海报
+            if (data.theater.poster) {
+                const poster = document.getElementById('hero-poster');
+                poster.src = data.theater.poster;
+                poster.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
