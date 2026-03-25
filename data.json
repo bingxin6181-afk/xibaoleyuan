@@ -1,8 +1,30 @@
 {
   "members": [
-    {"id": "1", "name": "Cindy", "role": "", "intro": "负责剧团整体把控", "avatar": ""}
+    {
+      "id": "1",
+      "name": "张三",
+      "role": "导演",
+      "intro": "负责剧团整体把控，擅长现代话剧",
+      "avatar": ""
+    }
   ],
-  "plays": [枕头人],
-  "gallery": [H08],
-  "schedule": [4月26日]
+  "plays": [
+    {
+      "id": "1",
+      "name": "《雷雨》",
+      "date": "2024.6",
+      "content": "年度大戏，改编自曹禺经典作品",
+      "cover": ""
+    }
+  ],
+  "gallery": [],
+  "schedule": [
+    {
+      "id": "1",
+      "day": "周三",
+      "time": "19:00-21:00",
+      "activity": "剧本围读",
+      "location": "排练厅B"
+    }
+  ]
 }
