@@ -3,78 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>戏胞乐园剧团</title>
+    <title>戏胞乐园 CELL Theater</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* 首页特有样式 */
-        .hero {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
-            color: white;
-            border-radius: 20px;
-            margin-bottom: 3rem;
-        }
-        
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .hero p {
-            font-size: 1.25rem;
-            opacity: 0.9;
-        }
-        
-        .hero-poster {
-            max-width: 400px;
-            margin: 2rem auto 0;
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        
-        .quick-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 3rem;
-        }
-        
-        .quick-card {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s;
-            text-decoration: none;
-            color: var(--text);
-        }
-        
-        .quick-card:hover {
-            transform: translateY(-4px);
-        }
-        
-        .quick-card .icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .quick-card h3 {
-            margin-bottom: 0.5rem;
-        }
-        
-        .quick-card p {
-            color: var(--text-light);
-            font-size: 0.875rem;
-        }
-    </style>
+    <link rel="icon" href="images/logo.png" type="image/png">
 </head>
 <body>
+    <!-- 装饰元素 -->
+    <div class="drama-mask-decoration left">🎭</div>
+    <div class="drama-mask-decoration right">🎭</div>
+    
     <!-- 导航 -->
     <nav class="navbar">
         <div class="navbar-content">
-            <div class="logo">🎭 <span id="site-name">戏胞乐园剧团</span></div>
+            <div class="logo">
+                <img src="images/logo.png" alt="戏胞乐园 Logo">
+                戏胞乐园
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html">首页</a></li>
                 <li><a href="members.html">成员</a></li>
@@ -91,41 +35,53 @@
     <main>
         <!-- Hero 区 -->
         <section class="hero">
-            <h1 id="hero-title">戏胞乐园剧团</h1>
-            <p id="hero-intro">一个充满热爱与创造力的学生戏剧社团</p>
-            <p id="hero-desc" style="margin-top: 1rem; font-size: 1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-                我们是一群热爱戏剧的年轻人，用舞台诠释青春，用表演传递情感。
-            </p>
-            <img id="hero-poster" class="hero-poster" style="display: none;">
+            <div class="hero-content">
+                <img src="images/logo.png" alt="戏胞乐园 Logo" class="hero-logo">
+                <h1>戏胞乐园</h1>
+                <div class="hero-subtitle">CELL Theater 🎭</div>
+                <p class="hero-tagline">深大唯一专注英语戏剧的社团</p>
+                <p class="hero-desc">
+                    前身是英语戏剧微专业，如今由一群热爱戏剧的同学们自发组成。<br>
+                    从戏剧游戏到英文排练，从幕后打磨到聚光灯下的演出，我们曾多次献上真诚的作品。
+                </p>
+                <div class="hero-welcome">
+                    💫 无论你是否学过表演，不论英语水平如何，只要你热爱戏剧，渴望表达，<br>
+                    或只是需要一个空间去释放压力、探索多面的自己——<br>
+                    <strong>我们就等你来，以心换心，成为"戏胞"的一员！</strong>
+                </div>
+                <div class="hero-cta">
+                    <a href="signup.html" class="btn-hero">加入我们 💫</a>
+                </div>
+            </div>
         </section>
         
         <!-- 快捷入口 -->
-        <h2 class="section-title">快速导航</h2>
+        <h2 class="section-title">探索更多</h2>
         <div class="quick-links">
             <a href="members.html" class="quick-card">
                 <div class="icon">👥</div>
-                <h3>成员介绍</h3>
-                <p>认识我们的小伙伴</p>
+                <h3>剧团成员</h3>
+                <p>认识热爱戏剧的小伙伴们</p>
             </a>
             <a href="plays.html" class="quick-card">
                 <div class="icon">🎬</div>
                 <h3>过往剧目</h3>
-                <p>查看我们的作品</p>
+                <p>查看我们的真诚作品</p>
             </a>
             <a href="gallery.html" class="quick-card">
-                <div class="icon">🖼️</div>
-                <h3>照片墙</h3>
-                <p>精彩瞬间回顾</p>
+                <div class="icon">📸</div>
+                <h3>精彩瞬间</h3>
+                <p>台前幕后的难忘时刻</p>
             </a>
             <a href="schedule.html" class="quick-card">
                 <div class="icon">📅</div>
                 <h3>活动安排</h3>
-                <p>每周活动计划</p>
+                <p>每周戏剧游戏与排练</p>
             </a>
             <a href="signup.html" class="quick-card">
-                <div class="icon">📝</div>
-                <h3>活动报名</h3>
-                <p>参加我们的活动</p>
+                <div class="icon">✨</div>
+                <h3>加入我们</h3>
+                <p>成为"戏胞"的一员</p>
             </a>
             <a href="guestbook.html" class="quick-card">
                 <div class="icon">💬</div>
@@ -133,21 +89,43 @@
                 <p>留下你想说的话</p>
             </a>
         </div>
+        
+        <!-- 特色介绍 -->
+        <section class="section" style="margin-top: 5rem;">
+            <h2 class="section-title">为什么选择戏胞？</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: var(--shadow); border-left: 4px solid var(--accent-green);">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎭</div>
+                    <h3 style="margin-bottom: 0.5rem; color: var(--primary-dark);">零门槛参与</h3>
+                    <p style="color: var(--text-light);">不需要表演经验，不要求英语水平，只要你热爱戏剧，这里就是你的舞台。</p>
+                </div>
+                <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: var(--shadow); border-left: 4px solid var(--accent-purple);">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🌟</div>
+                    <h3 style="margin-bottom: 0.5rem; color: var(--primary-dark);">专业指导</h3>
+                    <p style="color: var(--text-light);">前身是英语戏剧微专业，有系统的训练方法和丰富的演出经验。</p>
+                </div>
+                <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: var(--shadow); border-left: 4px solid var(--accent-red);">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">💖</div>
+                    <h3 style="margin-bottom: 0.5rem; color: var(--primary-dark);">温暖社群</h3>
+                    <p style="color: var(--text-light);">以心换心，在这里释放压力、探索自我，找到志同道合的朋友。</p>
+                </div>
+            </div>
+        </section>
     </main>
     
     <!-- 页脚 -->
-    <footer style="text-align: center; padding: 3rem 2rem; color: var(--text-light); border-top: 1px solid var(--border); margin-top: 4rem;">
-        <p>© 2024 戏胞乐园剧团 · 用热爱演绎青春</p>
+    <footer>
+        <p>© 2024 戏胞乐园 CELL Theater · 深大唯一英语戏剧社团</p>
+        <p style="margin-top: 0.5rem; opacity: 0.7;">以心换心，成为"戏胞"的一员 💫</p>
     </footer>
     
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            document.getElementById('site-name').textContent = '戏胞乐园剧团';
-            document.title = '戏胞乐园剧团';
-            
-            document.getElementById('hero-title').textContent = '戏胞乐园剧团';
-            document.getElementById('hero-intro').textContent = '一个充满热爱与创造力的学生戏剧社团';
-            document.getElementById('hero-desc').textContent = '我们是一群热爱戏剧的年轻人，用舞台诠释青春，用表演传递情感。';
+        // 简单的动画效果
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.quick-card, .member-card, .play-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
         });
     </script>
 </body>
