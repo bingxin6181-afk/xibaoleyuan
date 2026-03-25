@@ -153,14 +153,12 @@
         </section>
     </main>
     
-    <script src="js/data-manager.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const data = DataManager.getAll();
             document.querySelectorAll('.site-name').forEach(el => {
-                el.textContent = data.theater.name;
+                el.textContent = '戏胞乐园剧团';
             });
-            document.title = '留言墙 - ' + data.theater.name;
+            document.title = '留言墙 - 戏胞乐园剧团';
             
             loadMessages();
         });

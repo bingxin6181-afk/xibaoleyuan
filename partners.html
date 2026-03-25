@@ -75,15 +75,13 @@
         </section>
     </main>
     
-    <script src="js/data-manager.js"></script>
     <script src="js/display.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const data = DataManager.getAll();
             document.querySelectorAll('.site-name').forEach(el => {
-                el.textContent = data.theater.name;
+                el.textContent = '戏胞乐园剧团';
             });
-            document.title = '合作院校 - ' + data.theater.name;
+            document.title = '合作院校 - 戏胞乐园剧团';
             
             renderPartners('partners-container');
         });

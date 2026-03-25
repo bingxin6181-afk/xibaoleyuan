@@ -83,27 +83,28 @@
         </section>
     </main>
     
-    <script src="js/data-manager.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const data = DataManager.getAll();
-            document.querySelectorAll('.site-name').forEach(el => {
-                el.textContent = data.theater.name;
-            });
-            document.title = '赞助商 - ' + data.theater.name;
-            
-            // 渲染赞助商信息
-            const sponsor = data.sponsors;
-            const container = document.getElementById('sponsor-content');
-            
-            container.innerHTML = `
-                ${sponsor.logo ? 
-                    `<img src="${sponsor.logo}" class="sponsor-logo" alt="${sponsor.title}">` : 
-                    `<div class="placeholder-logo">💧</div>`
-                }
-                <h2 class="sponsor-title">${sponsor.title || '给水世代'}</h2>
-                <p class="sponsor-content">${sponsor.content || '感谢水世代对本剧团的大力支持！'}</p>
-            `;
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 从 API 获取数据
+            try {
+                const response = await fetch('https://damp-haze-d68b.bingxin6181.workers.dev/api/all');
+                const data = await response.json();
+                
+                document.querySelectorAll('.site-name').forEach(el => {
+                    el.textContent = '戏胞乐园剧团';
+                });
+                document.title = '赞助商 - 戏胞乐园剧团';
+                
+                // 渲染赞助商信息
+                const container = document.getElementById('sponsor-content');
+                container.innerHTML = `
+                    <div class="placeholder-logo">💧</div>
+                    <h2 class="sponsor-title">给水世代</h2>
+                    <p class="sponsor-content">感谢水世代对本剧团的大力支持！</p>
+                `;
+            } catch (error) {
+                console.error('Failed to load data:', error);
+            }
         });
     </script>
 </body>

@@ -31,16 +31,13 @@
         </section>
     </main>
     
-    <script src="js/data-manager.js"></script>
     <script src="js/display.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // 更新站点名称
-            const data = DataManager.getAll();
             document.querySelectorAll('.site-name').forEach(el => {
-                el.textContent = data.theater.name;
+                el.textContent = '戏胞乐园剧团';
             });
-            document.title = '成员介绍 - ' + data.theater.name;
+            document.title = '成员介绍 - 戏胞乐园剧团';
             
             // 渲染成员
             renderMembers('members-container');

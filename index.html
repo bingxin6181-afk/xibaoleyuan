@@ -140,27 +140,14 @@
         <p>© 2024 戏胞乐园剧团 · 用热爱演绎青春</p>
     </footer>
     
-    <script src="js/data-manager.js"></script>
     <script>
-        // 加载数据
-        document.addEventListener('DOMContentLoaded', () => {
-            const data = DataManager.getAll();
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('site-name').textContent = '戏胞乐园剧团';
+            document.title = '戏胞乐园剧团';
             
-            // 更新标题
-            document.getElementById('site-name').textContent = data.theater.name;
-            document.title = data.theater.name;
-            
-            // 更新 Hero
-            document.getElementById('hero-title').textContent = data.theater.name;
-            document.getElementById('hero-intro').textContent = data.theater.intro;
-            document.getElementById('hero-desc').textContent = data.theater.description;
-            
-            // 更新海报
-            if (data.theater.poster) {
-                const poster = document.getElementById('hero-poster');
-                poster.src = data.theater.poster;
-                poster.style.display = 'block';
-            }
+            document.getElementById('hero-title').textContent = '戏胞乐园剧团';
+            document.getElementById('hero-intro').textContent = '一个充满热爱与创造力的学生戏剧社团';
+            document.getElementById('hero-desc').textContent = '我们是一群热爱戏剧的年轻人，用舞台诠释青春，用表演传递情感。';
         });
     </script>
 </body>
