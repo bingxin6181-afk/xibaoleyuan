@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活动编辑 - 戏胞乐园</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .edit-container {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 2rem;
+        }
+        
+        .instructions {
+            background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+            border-left: 4px solid var(--accent-yellow);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .instructions h3 {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+        
+        .instructions ol {
+            margin-left: 1.5rem;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+        
+        .event-edit-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .event-edit-card:hover {
+            border-color: var(--accent-green);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .event-number {
+            background: var(--gradient-primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .event-title-preview {
+            font-size: 1.25rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        
+        .btn-delete {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+        
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .btn-add {
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            width: 100%;
+            margin-bottom: 2rem;
+            transition: transform 0.2s;
+        }
+        
+        .btn-add:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-generate {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 2rem;
+        }
+        
+        .result-box {
+            background: var(--stage-black);
+            color: #4ECDC4;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+        }
+        
+        .copy-btn {
+            background: white;
+            color: var(--stage-black);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .weekday-select {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        
+        .weekday-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .weekday-btn:hover, .weekday-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <img src="images/logo.png" alt="戏胞乐园 Logo">
+                戏胞乐园
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="members.html">成员</a></li>
+                <li><a href="plays.html">剧目</a></li>
+                <li><a href="gallery.html">照片墙</a></li>
+                <li><a href="schedule.html">活动安排</a></li>
+                <li><a href="schedule-edit.html" style="color: var(--primary-blue); font-weight: 700;">编辑活动</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="edit-container">
+        <h1 class="section-title">📝 活动编辑</h1>
+        
+        <div class="instructions">
+            <h3>💡 使用说明</h3>
+            <ol>
+                <li>填写每个活动的日期、星期、时间、地点和介绍</li>
+                <li>点击「+ 新增活动」可以添加更多活动</li>
+                <li>点击「生成 JSON」生成数据代码</li>
+                <li>复制生成的内容，粘贴到 data.json 的 schedule 字段</li>
+            </ol>
+        </div>
+        
+        <button class="btn-add" onclick="addNewEvent()">+ 新增活动</button>
+        
+        <div id="events-container">
+            <!-- 活动卡片将在这里动态生成 -->
+        </div>
+        
+        <button class="btn-generate" onclick="generateAllJSON()">✨ 生成全部 JSON</button>
+        
+        <div class="result-box" id="result-box"></div>
+        <button class="copy-btn" id="copy-btn" style="display: none;" onclick="copyToClipboard()">📋 复制</button>
+        <div class="success-message" id="success-message">✅ 已复制！请粘贴到 data.json 的 schedule 字段</div>
+    </main>
+    
+    <footer>
+        <p>© <span class="current-year">2026</span> 戏胞乐园 CELL Theater · 以心换心，成为"戏胞"的一员</p>
+    </footer>
+    
+    <script>
+        let eventCount = 0;
+        let events = [];
+        
+        // 初始化示例活动
+        function initEvents() {
+            addEvent({
+                day: '3月29日',
+                weekday: '周日',
+                time: '17:00-18:30',
+                activity: '即兴戏剧工作坊',
+                location: '深大排练厅'
+            });
+            addEvent({
+                day: '4月11日',
+                weekday: '周六',
+                time: '时间待定',
+                activity: '肢体工作坊',
+                location: '深大排练厅'
+            });
+            addEvent({
+                day: '4月26日',
+                weekday: '周日',
+                time: '时间待定',
+                activity: 'In The Room 戏剧拼盘',
+                location: '深大剧场'
+            });
+        }
+        
+        function addEvent(data = {}) {
+            eventCount++;
+            const eventId = eventCount;
+            
+            const container = document.getElementById('events-container');
+            const card = document.createElement('div');
+            card.className = 'event-edit-card';
+            card.id = `event-${eventId}`;
+            
+            card.innerHTML = `
+                <div class="event-header">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="event-number">${eventId}</div>
+                        <span class="event-title-preview" id="preview-${eventId}">${data.activity || '新活动'}</span>
+                    </div>
+                    <button class="btn-delete" onclick="deleteEvent(${eventId})">删除</button>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">日期 *</label>
+                        <input type="text" class="form-input" id="day-${eventId}" 
+                               placeholder="例如：3月29日" value="${data.day || ''}" 
+                               oninput="updatePreview(${eventId})">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">星期 *</label>
+                        <div class="weekday-select">
+                            ${['周一','周二','周三','周四','周五','周六','周日'].map(d => 
+                                `<button type="button" class="weekday-btn ${data.weekday === d ? 'active' : ''}" 
+                                         onclick="selectWeekday(${eventId}, '${d}', this)" data-day="${d}">${d}</button>`
+                            ).join('')}
+                        </div>
+                        <input type="hidden" id="weekday-${eventId}" value="${data.weekday || ''}">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">时间 *</label>
+                        <input type="text" class="form-input" id="time-${eventId}" 
+                               placeholder="例如：17:00-18:30 或 时间待定" value="${data.time || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">地点 *</label>
+                        <input type="text" class="form-input" id="location-${eventId}" 
+                               placeholder="例如：深大排练厅" value="${data.location || ''}">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">活动名称 *</label>
+                    <input type="text" class="form-input" id="activity-${eventId}" 
+                           placeholder="例如：即兴戏剧工作坊" value="${data.activity || ''}"
+                           oninput="updatePreview(${eventId})">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">详细介绍（可选）</label>
+                    <textarea class="form-textarea" id="desc-${eventId}" 
+                              placeholder="活动的详细介绍，会显示在活动详情页">${data.desc || ''}</textarea>
+                </div>
+            `;
+            
+            container.appendChild(card);
+        }
+        
+        function addNewEvent() {
+            addEvent();
+            // 滚动到新活动
+            setTimeout(() => {
+                const newCard = document.getElementById(`event-${eventCount}`);
+                newCard.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+        
+        function deleteEvent(id) {
+            if (confirm('确定删除这个活动吗？')) {
+                const card = document.getElementById(`event-${id}`);
+                card.remove();
+                // 重新编号
+                renumberEvents();
+            }
+        }
+        
+        function renumberEvents() {
+            const cards = document.querySelectorAll('.event-edit-card');
+            cards.forEach((card, index) => {
+                const num = card.querySelector('.event-number');
+                num.textContent = index + 1;
+            });
+        }
+        
+        function selectWeekday(eventId, day, btn) {
+            document.getElementById(`weekday-${eventId}`).value = day;
+            // 移除其他按钮的active
+            const buttons = btn.parentElement.querySelectorAll('.weekday-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            // 添加当前按钮的active
+            btn.classList.add('active');
+        }
+        
+        function updatePreview(eventId) {
+            const activity = document.getElementById(`activity-${eventId}`).value || '新活动';
+            document.getElementById(`preview-${eventId}`).textContent = activity;
+        }
+        
+        function generateAllJSON() {
+            const cards = document.querySelectorAll('.event-edit-card');
+            const events = [];
+            
+            cards.forEach((card, index) => {
+                const id = card.id.split('-')[1];
+                const day = document.getElementById(`day-${id}`).value;
+                const weekday = document.getElementById(`weekday-${id}`).value;
+                const time = document.getElementById(`time-${id}`).value;
+                const activity = document.getElementById(`activity-${id}`).value;
+                const location = document.getElementById(`location-${id}`).value;
+                const desc = document.getElementById(`desc-${id}`).value;
+                
+                if (day && activity) {
+                    events.push({
+                        id: (index + 1).toString(),
+                        day: day + (weekday ? `（${weekday}）` : ''),
+                        time: time || '时间待定',
+                        activity: activity,
+                        location: location || '地点待定',
+                        desc: desc || ''
+                    });
+                }
+            });
+            
+            if (events.length === 0) {
+                alert('请至少填写一个活动信息');
+                return;
+            }
+            
+            const resultBox = document.getElementById('result-box');
+            resultBox.textContent = JSON.stringify(events, null, 2);
+            resultBox.classList.add('show');
+            
+            document.getElementById('copy-btn').style.display = 'inline-block';
+        }
+        
+        function copyToClipboard() {
+            const resultBox = document.getElementById('result-box');
+            const text = resultBox.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                document.getElementById('success-message').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('success-message').classList.remove('show');
+                }, 3000);
+            }).catch(() => {
+                // 降级方案
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                document.getElementById('success-message').classList.add('show');
+            });
+        }
+        
+        // 初始化
+        initEvents();
+        
+        // 年份自动更新
+        document.querySelectorAll('.current-year').forEach(el => {
+            el.textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>
