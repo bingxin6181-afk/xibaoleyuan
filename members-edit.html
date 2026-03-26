@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成员自我介绍 - 戏胞乐园</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .edit-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 2rem;
+        }
+        
+        .member-edit-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .member-edit-card:hover {
+            border-color: var(--accent-green);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .member-preview {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .member-preview img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-light);
+        }
+        
+        .member-preview h3 {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+        }
+        
+        .edit-form {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .edit-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn-toggle {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .btn-toggle:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-submit {
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .result-box {
+            background: var(--stage-black);
+            color: #4ECDC4;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+        }
+        
+        .copy-btn {
+            background: white;
+            color: var(--stage-black);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+        
+        .instructions {
+            background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+            border-left: 4px solid var(--accent-yellow);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .instructions h3 {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+        
+        .instructions ol {
+            margin-left: 1.5rem;
+            color: var(--text-light);
+        }
+        
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <img src="images/logo.png" alt="戏胞乐园 Logo">
+                戏胞乐园
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="members.html">成员</a></li>
+                <li><a href="members-edit.html" style="color: var(--primary-blue); font-weight: 700;">编辑介绍</a></li>
+                <li><a href="plays.html">剧目</a></li>
+                <li><a href="gallery.html">照片墙</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="edit-container">
+        <h1 class="section-title">📝 成员自我介绍</h1>
+        
+        <div class="instructions">
+            <h3>💡 如何填写</h3>
+            <ol>
+                <li>点击下方「编辑介绍」按钮</li>
+                <li>填写你的<strong>职位</strong>（如：演员/编剧/舞美）</li>
+                <li>写一段<strong>个人简介</strong>（50-100字，介绍自己、加入原因、擅长什么）</li>
+                <li>点击「生成JSON」按钮</li>
+                <li>复制生成的内容，发给社长统一更新到网站</li>
+            </ol>
+        </div>
+        
+        <!-- Cindy -->
+        <div class="member-edit-card" data-member="cindy">
+            <div class="member-preview">
+                <img src="images/members/cindy.jpg" alt="Cindy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%233B4CCA%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2240%22>C</text></svg>'">
+                <div>
+                    <h3>Cindy</h3>
+                    <p style="color: var(--text-light);">点击编辑介绍 →</p>
+                </div>
+            </div>
+            <button class="btn-toggle" onclick="toggleForm('cindy')">✏️ 编辑介绍</button>
+            
+            <form class="edit-form" id="form-cindy" onsubmit="generateJSON(event, 'cindy')">
+                <div class="form-group">
+                    <label class="form-label">职位 / 角色</label>
+                    <input type="text" class="form-input" id="role-cindy" placeholder="例如：社长 / 演员 / 编剧" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">个人简介</label>
+                    <textarea class="form-textarea" id="intro-cindy" placeholder="介绍一下自己吧！比如：&#10;- 专业年级&#10;- 为什么加入戏胞乐园&#10;- 擅长什么（表演/编剧/舞美）&#10;- 对戏剧的理解" required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">✨ 生成 JSON</button>
+            </form>
+            
+            <div class="result-box" id="result-cindy"></div>
+            <button class="copy-btn" id="copy-cindy" style="display: none;" onclick="copyToClipboard('cindy')">📋 复制内容</button>
+            <div class="success-message" id="success-cindy">✅ 已复制！请粘贴发给社长</div>
+        </div>
+        
+        <!-- Emma -->
+        <div class="member-edit-card" data-member="emma">
+            <div class="member-preview">
+                <img src="images/members/emma.jpg" alt="Emma" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%239B59B6%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2240%22>E</text></svg>'">
+                <div>
+                    <h3>Emma</h3>
+                    <p style="color: var(--text-light);">点击编辑介绍 →</p>
+                </div>
+            </div>
+            <button class="btn-toggle" onclick="toggleForm('emma')">✏️ 编辑介绍</button>
+            
+            <form class="edit-form" id="form-emma" onsubmit="generateJSON(event, 'emma')">
+                <div class="form-group">
+                    <label class="form-label">职位 / 角色</label>
+                    <input type="text" class="form-input" id="role-emma" placeholder="例如：社长 / 演员 / 编剧" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">个人简介</label>
+                    <textarea class="form-textarea" id="intro-emma" placeholder="介绍一下自己吧！" required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">✨ 生成 JSON</button>
+            </form>
+            
+            <div class="result-box" id="result-emma"></div>
+            <button class="copy-btn" id="copy-emma" style="display: none;" onclick="copyToClipboard('emma')">📋 复制内容</button>
+            <div class="success-message" id="success-emma">✅ 已复制！请粘贴发给社长</div>
+        </div>
+        
+        <!-- Leona -->
+        <div class="member-edit-card" data-member="leona">
+            <div class="member-preview">
+                <img src="images/members/leona.jpg" alt="Leona" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%23E74C3C%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2240%22>L</text></svg>'">
+                <div>
+                    <h3>Leona</h3>
+                    <p style="color: var(--text-light);">点击编辑介绍 →</p>
+                </div>
+            </div>
+            <button class="btn-toggle" onclick="toggleForm('leona')">✏️ 编辑介绍</button>
+            
+            <form class="edit-form" id="form-leona" onsubmit="generateJSON(event, 'leona')">
+                <div class="form-group">
+                    <label class="form-label">职位 / 角色</label>
+                    <input type="text" class="form-input" id="role-leona" placeholder="例如：社长 / 演员 / 编剧" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">个人简介</label>
+                    <textarea class="form-textarea" id="intro-leona" placeholder="介绍一下自己吧！" required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">✨ 生成 JSON</button>
+            </form>
+            
+            <div class="result-box" id="result-leona"></div>
+            <button class="copy-btn" id="copy-leona" style="display: none;" onclick="copyToClipboard('leona')">📋 复制内容</button>
+            <div class="success-message" id="success-leona">✅ 已复制！请粘贴发给社长</div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2024 戏胞乐园 CELL Theater · 以心换心，成为"戏胞"的一员</p>
+    </footer>
+    
+    <script>
+        function toggleForm(member) {
+            const form = document.getElementById(`form-${member}`);
+            form.classList.toggle('active');
+            
+            // 隐藏结果
+            document.getElementById(`result-${member}`).classList.remove('show');
+            document.getElementById(`copy-${member}`).style.display = 'none';
+            document.getElementById(`success-${member}`).classList.remove('show');
+        }
+        
+        function generateJSON(event, member) {
+            event.preventDefault();
+            
+            const role = document.getElementById(`role-${member}`).value;
+            const intro = document.getElementById(`intro-${member}`).value;
+            
+            // 生成 data.json 片段
+            const jsonData = {
+                "id": member === 'cindy' ? '1' : member === 'emma' ? '2' : '3',
+                "name": member.charAt(0).toUpperCase() + member.slice(1),
+                "role": role,
+                "intro": intro,
+                "avatar": `images/members/${member}.jpg`
+            };
+            
+            const resultBox = document.getElementById(`result-${member}`);
+            resultBox.textContent = JSON.stringify(jsonData, null, 2);
+            resultBox.classList.add('show');
+            
+            document.getElementById(`copy-${member}`).style.display = 'inline-block';
+        }
+        
+        function copyToClipboard(member) {
+            const resultBox = document.getElementById(`result-${member}`);
+            const text = resultBox.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const successMsg = document.getElementById(`success-${member}`);
+                successMsg.classList.add('show');
+                
+                setTimeout(() => {
+                    successMsg.classList.remove('show');
+                }, 3000);
+            }).catch(err => {
+                // 降级方案
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                const successMsg = document.getElementById(`success-${member}`);
+                successMsg.classList.add('show');
+            });
+        }
+    </script>
+</body>
+</html>
