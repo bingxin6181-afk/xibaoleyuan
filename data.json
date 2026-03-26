@@ -35,12 +35,31 @@
   "schedule": [
     {
       "id": "1",
-      "day": "周三",
-      "time": "19:00-21:00",
-      "activity": "戏剧游戏 & 英文排练",
+      "day": "3月29日（周五）",
+      "time": "17:00-18:30",
+      "activity": "即兴戏剧工作坊",
       "location": "深大排练厅"
+    },
+    {
+      "id": "2",
+      "day": "4月11日（周四）",
+      "time": "时间待定",
+      "activity": "肢体工作坊",
+      "location": "深大排练厅"
+    },
+    {
+      "id": "3",
+      "day": "4月26日（周五）",
+      "time": "时间待定",
+      "activity": "In The Room 戏剧拼盘",
+      "location": "深大剧场"
     }
   ],
+  "signup": {
+    "type": "tencent",
+    "url": "",
+    "description": "点击下方按钮跳转至腾讯问卷报名"
+  },
   "partners": [],
   "sponsors": {
     "title": "给水世代",
