@@ -12,6 +12,25 @@
             padding: 2rem;
         }
         
+        .instructions {
+            background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+            border-left: 4px solid var(--accent-yellow);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .instructions h3 {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+        
+        .instructions ol {
+            margin-left: 1.5rem;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+        
         .member-edit-card {
             background: white;
             border-radius: 20px;
@@ -27,33 +46,42 @@
             box-shadow: var(--shadow-lg);
         }
         
-        .member-preview {
+        .member-header {
             display: flex;
             align-items: center;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
         
-        .member-preview img {
+        .avatar-preview {
             width: 100px;
             height: 100px;
+            border-radius: 50%;
+            background: var(--gradient-drama);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .avatar-preview.img-loaded {
+            background: none;
+        }
+        
+        .avatar-preview.img-loaded img {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid var(--primary-light);
         }
         
-        .member-preview h3 {
-            font-size: 1.5rem;
+        .member-name {
+            font-size: 1.75rem;
             color: var(--primary-dark);
-        }
-        
-        .edit-form {
-            display: none;
-            animation: fadeIn 0.3s;
-        }
-        
-        .edit-form.active {
-            display: block;
         }
         
         .form-group {
@@ -87,23 +115,19 @@
             resize: vertical;
         }
         
-        .btn-toggle {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: transform 0.2s;
+        .hint {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
         }
         
-        .btn-toggle:hover {
-            transform: translateY(-2px);
+        .hint a {
+            color: var(--primary-blue);
+            text-decoration: none;
         }
         
         .btn-submit {
-            background: var(--accent-green);
+            background: var(--gradient-primary);
             color: white;
             border: none;
             padding: 1rem 2rem;
@@ -113,6 +137,11 @@
             font-size: 1rem;
             width: 100%;
             margin-top: 1rem;
+            transition: transform 0.2s;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
         }
         
         .result-box {
@@ -136,38 +165,12 @@
             background: white;
             color: var(--stage-black);
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 8px;
             cursor: pointer;
             margin-top: 1rem;
             font-weight: 600;
-        }
-        
-        .instructions {
-            background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
-            border-left: 4px solid var(--accent-yellow);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-        }
-        
-        .instructions h3 {
-            color: var(--text);
-            margin-bottom: 0.5rem;
-        }
-        
-        .instructions ol {
-            margin-left: 1.5rem;
-            color: var(--text-light);
-        }
-        
-        .instructions li {
-            margin-bottom: 0.5rem;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            margin-right: 1rem;
         }
         
         .success-message {
@@ -197,7 +200,6 @@
                 <li><a href="members.html">成员</a></li>
                 <li><a href="members-edit.html" style="color: var(--primary-blue); font-weight: 700;">编辑介绍</a></li>
                 <li><a href="plays.html">剧目</a></li>
-                <li><a href="gallery.html">照片墙</a></li>
             </ul>
         </div>
     </nav>
@@ -206,98 +208,115 @@
         <h1 class="section-title">📝 成员自我介绍</h1>
         
         <div class="instructions">
-            <h3>💡 如何填写</h3>
+            <h3>💡 填写说明</h3>
             <ol>
-                <li>点击下方「编辑介绍」按钮</li>
-                <li>填写你的<strong>职位</strong>（如：演员/编剧/舞美）</li>
-                <li>写一段<strong>个人简介</strong>（50-100字，介绍自己、加入原因、擅长什么）</li>
-                <li>点击「生成JSON」按钮</li>
-                <li>复制生成的内容，发给社长统一更新到网站</li>
+                <li><strong>上传头像：</strong>把照片发到微信/QQ，或者上传到 <a href="https://imgbb.com" target="_blank">imgbb.com</a>，复制图片链接</li>
+                <li><strong>填写职位：</strong>如：演员 / 编剧 / 舞美 / 社长</li>
+                <li><strong>个人简介：</strong>50-100字，介绍自己、专业、为什么加入戏胞</li>
+                <li><strong>生成JSON：</strong>点击按钮生成代码，复制发给社长</li>
             </ol>
         </div>
         
         <!-- Cindy -->
-        <div class="member-edit-card" data-member="cindy">
-            <div class="member-preview">
-                <img src="images/members/cindy.jpg" alt="Cindy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%233B4CCA%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2240%22>C</text></svg>'">
-                <div>
-                    <h3>Cindy</h3>
-                    <p style="color: var(--text-light);">点击编辑介绍 →</p>
-                </div>
+        <div class="member-edit-card">
+            <div class="member-header">
+                <div class="avatar-preview" id="avatar-cindy">C</div>
+                <h2 class="member-name">Cindy</h2>
             </div>
-            <button class="btn-toggle" onclick="toggleForm('cindy')">✏️ 编辑介绍</button>
             
-            <form class="edit-form" id="form-cindy" onsubmit="generateJSON(event, 'cindy')">
+            <form onsubmit="generateJSON(event, 'cindy', 'Cindy')">
                 <div class="form-group">
-                    <label class="form-label">职位 / 角色</label>
-                    <input type="text" class="form-input" id="role-cindy" placeholder="例如：社长 / 演员 / 编剧" required>
+                    <label class="form-label">头像图片链接</label>
+                    <input type="url" class="form-input" id="avatar-url-cindy" 
+                           placeholder="https://i.ibb.co/xxx.jpg 或微信图片链接"
+                           onchange="previewAvatar('cindy')">
+                    <p class="hint">💡 不知道怎么获取链接？把照片发给我（社长），我来帮你上传</p>
                 </div>
+                
                 <div class="form-group">
-                    <label class="form-label">个人简介</label>
-                    <textarea class="form-textarea" id="intro-cindy" placeholder="介绍一下自己吧！比如：&#10;- 专业年级&#10;- 为什么加入戏胞乐园&#10;- 擅长什么（表演/编剧/舞美）&#10;- 对戏剧的理解" required></textarea>
+                    <label class="form-label">职位 / 角色 *</label>
+                    <input type="text" class="form-input" id="role-cindy" 
+                           placeholder="例如：演员 / 编剧 / 舞美 / 社长" required>
                 </div>
+                
+                <div class="form-group">
+                    <label class="form-label">个人简介 *</label>
+                    <textarea class="form-textarea" id="intro-cindy" 
+                              placeholder="介绍一下自己吧！&#10;• 专业年级&#10;• 为什么加入戏胞乐园&#10;• 对戏剧的理解或期待" required></textarea>
+                </div>
+                
                 <button type="submit" class="btn-submit">✨ 生成 JSON</button>
             </form>
             
             <div class="result-box" id="result-cindy"></div>
-            <button class="copy-btn" id="copy-cindy" style="display: none;" onclick="copyToClipboard('cindy')">📋 复制内容</button>
-            <div class="success-message" id="success-cindy">✅ 已复制！请粘贴发给社长</div>
+            <button class="copy-btn" id="copy-cindy" style="display: none;" onclick="copyToClipboard('cindy')">📋 复制</button>
+            <div class="success-message" id="success-cindy">✅ 已复制！请把内容发给社长</div>
         </div>
         
         <!-- Emma -->
-        <div class="member-edit-card" data-member="emma">
-            <div class="member-preview">
-                <img src="images/members/emma.jpg" alt="Emma" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%239B59B6%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2240%22>E</text></svg>'">
-                <div>
-                    <h3>Emma</h3>
-                    <p style="color: var(--text-light);">点击编辑介绍 →</p>
-                </div>
+        <div class="member-edit-card">
+            <div class="member-header">
+                <div class="avatar-preview" id="avatar-emma" style="background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%);">E</div>
+                <h2 class="member-name">Emma</h2>
             </div>
-            <button class="btn-toggle" onclick="toggleForm('emma')">✏️ 编辑介绍</button>
             
-            <form class="edit-form" id="form-emma" onsubmit="generateJSON(event, 'emma')">
+            <form onsubmit="generateJSON(event, 'emma', 'Emma')">
                 <div class="form-group">
-                    <label class="form-label">职位 / 角色</label>
-                    <input type="text" class="form-input" id="role-emma" placeholder="例如：社长 / 演员 / 编剧" required>
+                    <label class="form-label">头像图片链接</label>
+                    <input type="url" class="form-input" id="avatar-url-emma" 
+                           placeholder="https://i.ibb.co/xxx.jpg"
+                           onchange="previewAvatar('emma')">
                 </div>
+                
                 <div class="form-group">
-                    <label class="form-label">个人简介</label>
-                    <textarea class="form-textarea" id="intro-emma" placeholder="介绍一下自己吧！" required></textarea>
+                    <label class="form-label">职位 / 角色 *</label>
+                    <input type="text" class="form-input" id="role-emma" required>
                 </div>
+                
+                <div class="form-group">
+                    <label class="form-label">个人简介 *</label>
+                    <textarea class="form-textarea" id="intro-emma" required></textarea>
+                </div>
+                
                 <button type="submit" class="btn-submit">✨ 生成 JSON</button>
             </form>
             
             <div class="result-box" id="result-emma"></div>
-            <button class="copy-btn" id="copy-emma" style="display: none;" onclick="copyToClipboard('emma')">📋 复制内容</button>
-            <div class="success-message" id="success-emma">✅ 已复制！请粘贴发给社长</div>
+            <button class="copy-btn" id="copy-emma" style="display: none;" onclick="copyToClipboard('emma')">📋 复制</button>
+            <div class="success-message" id="success-emma">✅ 已复制！请发给社长</div>
         </div>
         
         <!-- Leona -->
-        <div class="member-edit-card" data-member="leona">
-            <div class="member-preview">
-                <img src="images/members/leona.jpg" alt="Leona" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%23E74C3C%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2240%22>L</text></svg>'">
-                <div>
-                    <h3>Leona</h3>
-                    <p style="color: var(--text-light);">点击编辑介绍 →</p>
-                </div>
+        <div class="member-edit-card">
+            <div class="member-header">
+                <div class="avatar-preview" id="avatar-leona" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);">L</div>
+                <h2 class="member-name">Leona</h2>
             </div>
-            <button class="btn-toggle" onclick="toggleForm('leona')">✏️ 编辑介绍</button>
             
-            <form class="edit-form" id="form-leona" onsubmit="generateJSON(event, 'leona')">
+            <form onsubmit="generateJSON(event, 'leona', 'Leona')">
                 <div class="form-group">
-                    <label class="form-label">职位 / 角色</label>
-                    <input type="text" class="form-input" id="role-leona" placeholder="例如：社长 / 演员 / 编剧" required>
+                    <label class="form-label">头像图片链接</label>
+                    <input type="url" class="form-input" id="avatar-url-leona" 
+                           placeholder="https://i.ibb.co/xxx.jpg"
+                           onchange="previewAvatar('leona')">
                 </div>
+                
                 <div class="form-group">
-                    <label class="form-label">个人简介</label>
-                    <textarea class="form-textarea" id="intro-leona" placeholder="介绍一下自己吧！" required></textarea>
+                    <label class="form-label">职位 / 角色 *</label>
+                    <input type="text" class="form-input" id="role-leona" required>
                 </div>
+                
+                <div class="form-group">
+                    <label class="form-label">个人简介 *</label>
+                    <textarea class="form-textarea" id="intro-leona" required></textarea>
+                </div>
+                
                 <button type="submit" class="btn-submit">✨ 生成 JSON</button>
             </form>
             
             <div class="result-box" id="result-leona"></div>
-            <button class="copy-btn" id="copy-leona" style="display: none;" onclick="copyToClipboard('leona')">📋 复制内容</button>
-            <div class="success-message" id="success-leona">✅ 已复制！请粘贴发给社长</div>
+            <button class="copy-btn" id="copy-leona" style="display: none;" onclick="copyToClipboard('leona')">📋 复制</button>
+            <div class="success-message" id="success-leona">✅ 已复制！请发给社长</div>
         </div>
     </main>
     
@@ -306,29 +325,29 @@
     </footer>
     
     <script>
-        function toggleForm(member) {
-            const form = document.getElementById(`form-${member}`);
-            form.classList.toggle('active');
+        function previewAvatar(member) {
+            const url = document.getElementById(`avatar-url-${member}`).value;
+            const preview = document.getElementById(`avatar-${member}`);
             
-            // 隐藏结果
-            document.getElementById(`result-${member}`).classList.remove('show');
-            document.getElementById(`copy-${member}`).style.display = 'none';
-            document.getElementById(`success-${member}`).classList.remove('show');
+            if (url) {
+                preview.innerHTML = `<img src="${url}" onerror="this.style.display='none'; this.parentElement.textContent='${member.charAt(0).toUpperCase()}'; this.parentElement.classList.remove('img-loaded');">`;
+                preview.classList.add('img-loaded');
+            }
         }
         
-        function generateJSON(event, member) {
+        function generateJSON(event, member, name) {
             event.preventDefault();
             
+            const avatarUrl = document.getElementById(`avatar-url-${member}`).value || '';
             const role = document.getElementById(`role-${member}`).value;
             const intro = document.getElementById(`intro-${member}`).value;
             
-            // 生成 data.json 片段
             const jsonData = {
                 "id": member === 'cindy' ? '1' : member === 'emma' ? '2' : '3',
-                "name": member.charAt(0).toUpperCase() + member.slice(1),
+                "name": name,
                 "role": role,
                 "intro": intro,
-                "avatar": `images/members/${member}.jpg`
+                "avatar": avatarUrl
             };
             
             const resultBox = document.getElementById(`result-${member}`);
@@ -345,21 +364,16 @@
             navigator.clipboard.writeText(text).then(() => {
                 const successMsg = document.getElementById(`success-${member}`);
                 successMsg.classList.add('show');
-                
-                setTimeout(() => {
-                    successMsg.classList.remove('show');
-                }, 3000);
-            }).catch(err => {
-                // 降级方案
+                setTimeout(() => successMsg.classList.remove('show'), 3000);
+            }).catch(() => {
+                // 降级
                 const textarea = document.createElement('textarea');
                 textarea.value = text;
                 document.body.appendChild(textarea);
                 textarea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
-                
-                const successMsg = document.getElementById(`success-${member}`);
-                successMsg.classList.add('show');
+                document.getElementById(`success-${member}`).classList.add('show');
             });
         }
     </script>
